@@ -1,9 +1,10 @@
-
 import pygame
 import sys
 import random
+
 pygame.init()
 pygame.font.init()
+
 # Constants
 WIDTH, HEIGHT = 800, 300
 GROUND_HEIGHT = 50
@@ -12,6 +13,12 @@ FPS = 60
 # Colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+
+
+
+# Background image
+original_background_image = pygame.image.load('Platformer/data/images/Characters/Free/Background/parallax-mountain-bg.png')
+background_image = pygame.transform.scale(original_background_image, (WIDTH, HEIGHT))
 
 # Create the game window
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -22,7 +29,7 @@ clock = pygame.time.Clock()
 
 # Game variables
 dino_x = 50
-dino_y = HEIGHT - GROUND_HEIGHT - 60  # Adjusted initial position
+dino_y = HEIGHT - GROUND_HEIGHT - 60
 dino_width = 30
 dino_height = 30
 dino_speed = 5
@@ -30,7 +37,11 @@ jumping = False
 jump_duration = 0.5
 jump_timer = 0.5
 jump_speed = 20
-gravity = 2000
+gravity = 1000
+
+dino_image = pygame.image.load('Platformer/data/images/Characters/Enemy/idle/Tile000.png')
+dino_image = pygame.transform.scale(dino_image, (dino_width, dino_height))
+
 
 cactus_list = []
 
@@ -38,7 +49,6 @@ cactus_list = []
 score = 0
 font = pygame.font.Font(None, 36)
 
-# Functions
 def draw_ground():
     pygame.draw.rect(screen, BLACK, (0, HEIGHT - GROUND_HEIGHT, WIDTH, GROUND_HEIGHT))
 
@@ -47,9 +57,6 @@ def draw_dino(x, y):
 
 def draw_cactus(x, y):
     pygame.draw.rect(screen, BLACK, (x, y, 20, 40))
-
-def draw_bird(x, y):
-    pygame.draw.rect(screen, BLACK, (x, y, 0,70 ))    
 
 def draw_score(score):
     score_text = font.render("Score: " + str(score), True, BLACK)
@@ -114,11 +121,10 @@ while True:
     # Update score based on frames survived
     score += 1
 
-    #birds that attack the player
-     
+    # Draw the background image
+    screen.blit(background_image, (0, 0))
 
-    # Update screen
-    screen.fill(WHITE)
+    # Draw other elements on top of the background
     draw_ground()
     draw_dino(dino_x, dino_y)
 
@@ -128,5 +134,6 @@ while True:
     draw_score(score)
 
     pygame.display.flip()
+
 
 
