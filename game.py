@@ -6,16 +6,14 @@ pygame.init()
 pygame.font.init()
 
 # Constants
-WIDTH, HEIGHT = 800, 300
+WIDTH, HEIGHT = 800, 300 
 GROUND_HEIGHT = 50
 FPS = 60
 
 # Colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
-
-# Load dino image
-dino_img = pygame.image.load("Platformer\data\images\Characters\Enemy\walk\Tile000.png")
+RED = (255, 0, 0)
 
 # Background image
 original_background_image = pygame.image.load('Platformer/data/images/Characters/Free/Background/parallax-mountain-bg.png')
@@ -31,27 +29,30 @@ clock = pygame.time.Clock()
 # Game variables
 dino_x = 50
 dino_y = HEIGHT - GROUND_HEIGHT - 60
+dino_width = 30
+dino_height = 30
 dino_speed = 5
 jumping = False
 jump_duration = 0.5
-jump_timer = 0.5
+jump_timer = 0.5        
 jump_speed = 20
-gravity = 500
+gravity = 750
 
 cactus_list = []
 
 # Score variables
 score = 0
 font = pygame.font.Font(None, 36)
+score_update_frequency = 1  # Update the score every 10 frames
 
 def draw_ground():
     pygame.draw.rect(screen, BLACK, (0, HEIGHT - GROUND_HEIGHT, WIDTH, GROUND_HEIGHT))
 
 def draw_dino(x, y):
-    screen.blit(dino_img, (x, y))
+    pygame.draw.rect(screen, WHITE , (x, y, dino_width, dino_height))
 
 def draw_cactus(x, y):
-    pygame.draw.rect(screen, BLACK, (x, y, 20, 40))
+    pygame.draw.rect(screen, RED, (x, y, 20, 40))
 
 def draw_score(score):
     score_text = font.render("Score: " + str(score), True, BLACK)
@@ -67,8 +68,10 @@ def game_over():
     sys.exit()
 
 # Game loop
+frame_count = 0  # Track the number of frames
 while True:
     dt = clock.tick(FPS) / 1000  # Delta time in seconds
+    frame_count += 1
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -91,7 +94,7 @@ while True:
             jump_timer = 0
 
     # Apply gravity when not jumping
-    if not jumping and dino_y < HEIGHT - GROUND_HEIGHT - dino_img.get_height():
+    if not jumping and dino_y < HEIGHT - GROUND_HEIGHT - dino_height:
         dino_y += gravity * dt
 
     # Move cactus
@@ -100,9 +103,9 @@ while True:
 
         # Check for collision with the dinosaur
         if dino_x < cactus[0] + 20 and \
-                dino_x + dino_img.get_width() > cactus[0] and \
+                dino_x + dino_width > cactus[0] and \
                 dino_y < cactus[1] + 40 and \
-                dino_y + dino_img.get_height() > cactus[1]:
+                dino_y + dino_height > cactus[1]:
             game_over()
 
         # Remove off-screen cacti
@@ -114,7 +117,8 @@ while True:
         cactus_list.append([WIDTH, HEIGHT - GROUND_HEIGHT - 40])
 
     # Update score based on frames survived
-    score += 1
+    if frame_count % score_update_frequency == 0:
+        score += 1
 
     # Draw the background image
     screen.blit(background_image, (0, 0))
@@ -126,6 +130,7 @@ while True:
     for cactus in cactus_list:
         draw_cactus(cactus[0], cactus[1])
 
+    # Draw the score
     draw_score(score)
 
     pygame.display.flip()
