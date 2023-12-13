@@ -13,7 +13,7 @@ FPS = 60
 # Colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
-
+ 
 
 
 # Background image
@@ -37,11 +37,7 @@ jumping = False
 jump_duration = 0.5
 jump_timer = 0.5
 jump_speed = 20
-gravity = 1000
-
-dino_image = pygame.image.load('Platformer/data/images/Characters/Enemy/idle/Tile000.png')
-dino_image = pygame.transform.scale(dino_image, (dino_width, dino_height))
-
+gravity = 500
 
 cactus_list = []
 
@@ -134,6 +130,5 @@ while True:
     draw_score(score)
 
     pygame.display.flip()
-
 
 
