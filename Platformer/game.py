@@ -1,9 +1,10 @@
-
 import pygame
 import sys
 import random
+
 pygame.init()
 pygame.font.init()
+
 # Constants
 WIDTH, HEIGHT = 800, 300
 GROUND_HEIGHT = 50
@@ -12,6 +13,12 @@ FPS = 60
 # Colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+ 
+
+
+# Background image
+original_background_image = pygame.image.load('Platformer/data/images/Characters/Free/Background/parallax-mountain-bg.png')
+background_image = pygame.transform.scale(original_background_image, (WIDTH, HEIGHT))
 
 # Create the game window
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -22,15 +29,15 @@ clock = pygame.time.Clock()
 
 # Game variables
 dino_x = 50
-dino_y = HEIGHT - GROUND_HEIGHT - 60  # Adjusted initial position
+dino_y = HEIGHT - GROUND_HEIGHT - 60
 dino_width = 30
 dino_height = 30
 dino_speed = 5
 jumping = False
 jump_duration = 0.5
-jump_timer = 0
+jump_timer = 0.5
 jump_speed = 20
-gravity = 200
+gravity = 500
 
 cactus_list = []
 
@@ -38,7 +45,6 @@ cactus_list = []
 score = 0
 font = pygame.font.Font(None, 36)
 
-# Functions
 def draw_ground():
     pygame.draw.rect(screen, BLACK, (0, HEIGHT - GROUND_HEIGHT, WIDTH, GROUND_HEIGHT))
 
@@ -105,14 +111,16 @@ while True:
             cactus_list.remove(cactus)
 
     # Generate new cactus with reduced frequency
-    if random.randint(0, 100) < 5:
+    if random.randint(0, 150) < 2:
         cactus_list.append([WIDTH, HEIGHT - GROUND_HEIGHT - 40])
 
     # Update score based on frames survived
     score += 1
 
-    # Update screen
-    screen.fill(WHITE)
+    # Draw the background image
+    screen.blit(background_image, (0, 0))
+
+    # Draw other elements on top of the background
     draw_ground()
     draw_dino(dino_x, dino_y)
 
