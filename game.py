@@ -6,15 +6,16 @@ pygame.init()
 pygame.font.init()
 
 # Constants
-WIDTH, HEIGHT = 800, 300 
+WIDTH, HEIGHT = 800, 300
 GROUND_HEIGHT = 50
 FPS = 60
 
 # Colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
- 
 
+# Load dino image
+dino_img = pygame.image.load("Platformer\data\images\Characters\Enemy\walk\Tile000.png")
 
 # Background image
 original_background_image = pygame.image.load('Platformer/data/images/Characters/Free/Background/parallax-mountain-bg.png')
@@ -30,17 +31,14 @@ clock = pygame.time.Clock()
 # Game variables
 dino_x = 50
 dino_y = HEIGHT - GROUND_HEIGHT - 60
-dino_width = 30
-dino_height = 30
 dino_speed = 5
 jumping = False
 jump_duration = 0.5
-jump_timer = 0.5        
+jump_timer = 0.5
 jump_speed = 20
 gravity = 500
 
 cactus_list = []
-
 
 # Score variables
 score = 0
@@ -50,7 +48,7 @@ def draw_ground():
     pygame.draw.rect(screen, BLACK, (0, HEIGHT - GROUND_HEIGHT, WIDTH, GROUND_HEIGHT))
 
 def draw_dino(x, y):
-    pygame.draw.rect(screen, WHITE , (x, y, dino_width, dino_height))
+    screen.blit(dino_img, (x, y))
 
 def draw_cactus(x, y):
     pygame.draw.rect(screen, BLACK, (x, y, 20, 40))
@@ -67,8 +65,7 @@ def game_over():
     pygame.time.wait(2000)
     pygame.quit()
     sys.exit()
-def draw_sky_block(x, y):
-    pygame.draw.rect(screen, BLACK, (x, y, 20, 40))
+
 # Game loop
 while True:
     dt = clock.tick(FPS) / 1000  # Delta time in seconds
@@ -94,7 +91,7 @@ while True:
             jump_timer = 0
 
     # Apply gravity when not jumping
-    if not jumping and dino_y < HEIGHT - GROUND_HEIGHT - dino_height:
+    if not jumping and dino_y < HEIGHT - GROUND_HEIGHT - dino_img.get_height():
         dino_y += gravity * dt
 
     # Move cactus
@@ -103,9 +100,9 @@ while True:
 
         # Check for collision with the dinosaur
         if dino_x < cactus[0] + 20 and \
-                dino_x + dino_width > cactus[0] and \
+                dino_x + dino_img.get_width() > cactus[0] and \
                 dino_y < cactus[1] + 40 and \
-                dino_y + dino_height > cactus[1]:
+                dino_y + dino_img.get_height() > cactus[1]:
             game_over()
 
         # Remove off-screen cacti
@@ -113,7 +110,7 @@ while True:
             cactus_list.remove(cactus)
 
     # Generate new cactus with reduced frequency
-    if random.randint(0, 150) < 3:
+    if random.randint(0, 150) < 2:
         cactus_list.append([WIDTH, HEIGHT - GROUND_HEIGHT - 40])
 
     # Update score based on frames survived
@@ -129,7 +126,6 @@ while True:
     for cactus in cactus_list:
         draw_cactus(cactus[0], cactus[1])
 
+    draw_score(score)
 
     pygame.display.flip()
-
-
